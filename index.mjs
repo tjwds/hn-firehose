@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import TurndownService from 'turndown';
 
 const term = process.argv[2];
 
@@ -6,6 +7,8 @@ if (!term) {
   console.log("Invoke with a term, like `node index.mjs foo`.");
   process.exit();
 }
+
+const turndownService = new TurndownService();
 
 const seen = {};
 
@@ -19,10 +22,13 @@ const fetchAndMatchTerms = async function () {
     const link = item[0].match(/<link>([\s\S]*)<\/link>/m);
     if (!seen[link]) {
       const date = item[0].match(/<pubDate>([\s\S]*)<\/pubDate>/m);
+      console.log();
+      console.log("=============");
+      console.log();
       console.log(link[1]);
       console.log(date[1]);
-      console.log(comment.slice(10, -4));
       console.log();
+      console.log(turndownService.turndown(comment.slice(10, -4)));
       seen[link] = true;
     }
   });
